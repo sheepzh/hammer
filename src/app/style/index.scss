@@ -1,20 +1,24 @@
-@import "./aside-menu.scss";
+@use "./aside-menu.scss";
 
 body {
   margin: 0 10%;
   margin-top: 80px;
 }
+
 h2 {
   font-size: 27px;
 }
+
 h3 {
   font-size: 22px;
 }
+
 p,
 a {
   font-size: 15px;
   line-height: 20px;
 }
+
 .el-main {
   padding-top: 0 !important;
   padding-left: 45px !important;

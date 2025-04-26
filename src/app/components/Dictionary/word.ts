@@ -1,9 +1,8 @@
-import { defineComponent, h, reactive } from 'vue'
+import { defineComponent, h, reactive, toRaw } from 'vue'
 import { ElButton, ElInput, ElMessage, ElMessageBox, ElTag } from 'element-plus'
 import { getDefaultMask, getRealMask } from '../../../common/default-word'
 import './style/word'
 import BannedWordDb from '../../../database/dictionary-db'
-import { nonreactive } from '../../../common/vue3-extent'
 import { t } from '../../locale'
 
 interface Props {
@@ -33,7 +32,7 @@ const saveWord = (_ctx: any) => {
 
   const update = () => {
     words[origin] = current
-    db.update(nonreactive(_ctx.dict) as XGFLFG.Dictionary).then(() => {
+    db.update(toRaw(_ctx.dict) as XGFLFG.Dictionary).then(() => {
       _ctx.formData.origin = _ctx.formData.mask = ''
       _ctx.$refs.originInput.focus()
     })
@@ -98,7 +97,7 @@ export default defineComponent({
         ElTag,
         {
           closable: true,
-          size: 'mini',
+          size: 'small',
           class: 'word-item',
           onClose: () => this.delete(origin)
         },
@@ -119,7 +118,7 @@ export default defineComponent({
           modelValue: _ctx.formData.origin,
           placeholder: t(msg => msg.item.word.original),
           clearable: true,
-          size: 'mini',
+          size: 'small',
           ref: 'originInput',
           onClear: () => (_ctx.formData.origin = _ctx.formData.mask = ''),
           class: 'word-input-left',
@@ -132,7 +131,7 @@ export default defineComponent({
             modelValue: _ctx.formData.mask,
             placeholder: t(msg => msg.item.word.mask),
             clearable: true,
-            size: 'mini',
+            size: 'small',
             onClear: () => (_ctx.formData.mask = ''),
             class: 'word-input-right ',
             onInput: (val: string) => (_ctx.formData.mask = val.trim()),
@@ -143,12 +142,12 @@ export default defineComponent({
               h('span', [
                 h(ElButton, {
                   icon: 'el-icon-check',
-                  size: 'mini',
+                  size: 'small',
                   onClick: () => saveWord(_ctx)
                 }),
                 h(ElButton, {
                   icon: 'el-icon-close',
-                  size: 'mini',
+                  size: 'small',
                   onClick: _ctx.closeInput
                 })
               ])
@@ -160,7 +159,7 @@ export default defineComponent({
         ElButton,
         {
           icon: 'el-icon-plus',
-          size: 'mini',
+          size: 'small',
           onClick: _ctx.showInput
         },
         { default: () => t(msg => msg.dict.button.add) }

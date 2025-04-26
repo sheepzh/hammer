@@ -38,6 +38,7 @@ class Replacer {
             return
         }
         const nodeKey = this.getNodeKey(node)
+        if (!nodeKey) return
         Array.from(node.childNodes).forEach((child, i) => {
             if (child.nodeName === '#text') {
                 this.processTextNode(node, i, nodeKey)

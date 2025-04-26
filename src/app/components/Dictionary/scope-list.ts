@@ -34,10 +34,6 @@ export default defineComponent({
     const closable = _ctx.closable
     for (const key in scopes) {
       const scope = scopes[key] as XGFLFG.Scope
-      const tagType = { closable, onClose: () => _ctx.$emit('deleted', key), style: 'margin-right:6px;margin-bottom:6px;' }
-      if (scope.useReg) {
-        tagType['type'] = 'warning'
-      }
       const i = h('i', { class: `el-icon-${scope.type === 'url' ? 'link' : 'collection'}`, style: 'margin-right:4px' })
       const tooltip = h(ElTooltip,
         {
@@ -45,7 +41,12 @@ export default defineComponent({
           placement: 'bottom',
           effect: _ctx.tooltipEffect
         },
-        () => h(ElTag, tagType, () => [i, scope.pattern])
+        () => h(ElTag, {
+          closable,
+          onClose: () => _ctx.$emit('deleted', key),
+          style: 'margin-right:6px;margin-bottom:6px;',
+          type: scope.useReg ? 'warning' : undefined
+        }, () => [i, scope.pattern])
       )
       tags.push(tooltip)
     }

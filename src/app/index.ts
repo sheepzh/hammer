@@ -1,14 +1,20 @@
-import './style/index'
-import { createApp } from 'vue'
-import AppMain from './app'
-import './element-plus'
-import installRouter from './router'
 import { t2Chrome } from "@util/i18n/chrome/t"
+import { createApp } from 'vue'
+import './element-plus'
+import { initElementLocale } from './element-plus'
+import Main from "./layout"
+import installRouter from './router'
+import './style'
 
-const app = createApp(AppMain)
+function main() {
+    const app = createApp(Main)
+    installRouter(app)
+    initElementLocale(app)
+    const el = document.createElement('div')
+    el.id = 'app'
+    document.body.append(el)
+    app.mount(el)
+    document.title = t2Chrome(msg => msg.app.name)
+}
 
-installRouter(app)
-
-app.mount('#app')
-
-document.title = t2Chrome(msg => msg.app.name)
+main()

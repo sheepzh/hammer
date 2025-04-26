@@ -1,54 +1,74 @@
+import StoragePromise from "@db/common/storage-promise"
 
+let store: Record<string, any> = {}
 
-class MockStorage implements chrome.storage.StorageArea {
-    get(callback: (items: { [key: string]: any; }) => void): void;
-    get(keys: string | Object | string[], callback: (items: { [key: string]: any; }) => void): void;
-    get(keys: any, callback?: any) {
-        const items = {}
-        if (keys instanceof String) {
-            this.fillVal(keys as string, items)
-        } else if (keys instanceof Array) {
-            (keys as Array<string>).forEach(key => this.fillVal(key, items))
-        } else if (keys instanceof Object) {
-            Object.keys(keys).forEach(key => this.fillVal(key, items))
-        }
-        callback && callback(items)
-    }
-    QUOTA_BYTES: number = 1024 * 1024 * 5
-
-    private data: any = {}
-
-    getBytesInUse(callback: (bytesInUse: number) => void): void;
-    getBytesInUse(keys: string | string[], callback: (bytesInUse: number) => void): void;
-    getBytesInUse(_keys: any, callback?: any) {
-        callback && callback(0)
-    }
-
-    clear(callback?: () => void): void {
-        this.data = {}
-        callback && callback()
-    }
-
-    set(items: Object, callback?: () => void): void {
-        for (const key in items) {
-            this.data[key] = items[key]
-        }
-        callback && callback()
-    }
-
-    remove(keys: string | string[], callback?: () => void): void {
-        if (keys instanceof String) {
-            delete this.data[keys as string]
-        } else {
-            (keys as string[]).forEach(key => delete this.data[key])
-        }
-        callback && callback()
-    }
-
-    private fillVal(key: string, items: { [key: string]: any; }) {
-        const val = this.data[key]
-        val !== undefined && val !== null && (items[key] = val)
-    }
+function resolveOneKey(key: string, result: Record<string, any>) {
+    const val = store[key]
+    val !== undefined && (result[key] = val)
 }
 
-export default new MockStorage()
+function resolveKey(key: string | Object | string[] | null) {
+    if (key === null || key === undefined) {
+        return store
+    } else if (typeof key === 'string') {
+        const result = {}
+        resolveOneKey(key, result)
+        return result
+    } else if (Array.isArray(key)) {
+        const result = {}
+        key.forEach(curr => resolveOneKey(curr, result))
+        return result
+    } else if (typeof key === 'object') {
+        return Object.keys(key).reduce<Record<string, any>>((acc, curr) => {
+            acc[curr] = store[curr] ?? (key as any)[curr]
+            return acc
+        }, {})
+    }
+    throw new Error('Wrong key given')
+}
+
+const sync = {
+    get: jest.fn((...args) => {
+        let id: string | string[] | Object
+        let cb: (result: {}) => void
+        let result: {} = {}
+        if (args.length === 1) {
+            result = store
+            cb = args[0]
+        } else {
+            id = args[0]
+            result = resolveKey(id)
+            cb = args[1]
+        }
+        cb?.(result)
+    }),
+    getBytesInUse: jest.fn(cb => cb && cb(0)),
+    set: jest.fn((payload, cb) => {
+        Object.keys(payload).forEach((key) => (store[key] = payload[key]))
+        cb?.()
+    }),
+    remove: jest.fn((id, cb) => {
+        const idType = typeof id
+        const keys: string[] = idType === 'string' ? [id] : (Array.isArray(id) ? id : Object.keys(id))
+        keys.forEach((key: string) => delete store[key])
+        cb?.()
+    }),
+    clear: jest.fn(cb => {
+        store = {}
+        cb?.()
+    })
+} as unknown as chrome.storage.SyncStorageArea
+
+const local = { ...sync, QUOTA_BYTES: 5 * 1024 * 1024 } as chrome.storage.LocalStorageArea
+
+const managed = sync
+
+const onChanged = {
+    addListener: jest.fn(),
+    removeListener: jest.fn(),
+    hasListener: jest.fn()
+} as unknown as chrome.storage.StorageChangedEvent
+
+export default { local, sync, managed, onChanged }
+
+export const localPromise = new StoragePromise(local)

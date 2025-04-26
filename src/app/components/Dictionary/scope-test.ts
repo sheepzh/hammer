@@ -1,14 +1,11 @@
-import type { SetupContext, UnwrapRef, VNode } from "vue"
-
-import { ElAlert, ElInput, ElCol, ElRow, ElButton } from "element-plus"
-import { defineComponent, h, reactive, watchEffect } from "vue"
-import { read as readClipboard } from 'clipboardy'
+import clipboardy from 'clipboardy'
+import { ElAlert, ElButton, ElCol, ElInput, ElRow } from "element-plus"
+import { defineComponent, h, reactive, watchEffect, type SetupContext, type UnwrapRef, type VNode } from "vue"
 import { matchScope } from "../../../common/matcher"
-import Url from 'url-parse'
 import { t } from "../../locale"
 
 const url2Host = (urlStr: string) => {
-  const url = Url(urlStr)
+  const url = new URL(urlStr)
   return url.host
 }
 
@@ -97,7 +94,7 @@ const comp = defineComponent(
                   h(ElButton,
                     {
                       icon: 'el-icon-document-copy',
-                      onClick: () => readClipboard().then(updateTargetUrl)
+                      onClick: () => clipboardy.read().then(updateTargetUrl)
                     },
                     () => t(msg => msg.dict.button.paste)
                   )

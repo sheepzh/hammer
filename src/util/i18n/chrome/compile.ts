@@ -1,6 +1,6 @@
 // Generate the messages used by Chrome
 function compile(obj: any, parentKey = ''): any {
-    const result = {}
+    const result: any = {}
     if (typeof obj === 'object') {
         for (const key in obj) {
             const val = obj[key]
@@ -12,7 +12,7 @@ function compile(obj: any, parentKey = ''): any {
                 result[childKey] = children[childKey]
             }
         }
-    } else {
+    } else if (parentKey) {
         result[parentKey] = {
             message: obj + '',
             description: 'None'
@@ -20,6 +20,5 @@ function compile(obj: any, parentKey = ''): any {
     }
     return result
 }
-
 
 export default compile

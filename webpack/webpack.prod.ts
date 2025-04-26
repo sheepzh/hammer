@@ -1,7 +1,7 @@
-import optionGenerator from './webpack.common'
-import path from 'path'
 import FileManagerWebpackPlugin from 'filemanager-webpack-plugin'
-import webpack from 'webpack'
+import path from 'path'
+import { type WebpackPluginInstance } from 'webpack'
+import optionGenerator from './webpack.common'
 
 const { name, version } = require(path.join(__dirname, '..', 'package.json'))
 
@@ -45,7 +45,7 @@ options.plugins && options.plugins.push(
                 }
             ]
         }
-    }) as webpack.WebpackPluginInstance
+    }) as WebpackPluginInstance
 )
 
 options.output && (options.output.path = outputDir)

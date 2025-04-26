@@ -1,8 +1,8 @@
-import path from 'path'
-import GenerateJsonPlugin from 'generate-json-webpack-plugin'
 import FileManagerWebpackPlugin from 'filemanager-webpack-plugin'
+import GenerateJsonPlugin from 'generate-json-webpack-plugin'
+import path from 'path'
+import { type WebpackPluginInstance } from 'webpack'
 import optionGenerator from './webpack.common'
-import webpack from 'webpack'
 
 const outputDir = path.resolve(__dirname, '..', 'dist_dev')
 
@@ -20,7 +20,7 @@ const manifestFirefoxName = 'manifest-firefox.json'
 // The manifest.json is different from Chrome's with add-on ID
 const firefoxManifestGeneratePlugin = new GenerateJsonPlugin(manifestFirefoxName,
     { ...manifest, browser_specific_settings: { gecko: { id: 'timer@zhy' } } }
-) as unknown as webpack.WebpackPluginInstance
+) as unknown as WebpackPluginInstance
 if (options.plugins) {
     options.plugins.push(firefoxManifestGeneratePlugin)
     const firefoxDevDir = path.join(__dirname, '..', 'firefox_dev')
@@ -36,7 +36,8 @@ if (options.plugins) {
                     }
                 ]
             }
-        }) as webpack.WebpackPluginInstance)
+        }) as WebpackPluginInstance,
+    )
 }
 
 options.output && (options.output.path = outputDir)

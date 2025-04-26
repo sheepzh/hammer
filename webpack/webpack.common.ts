@@ -1,10 +1,12 @@
-import path from 'path'
-import GenerateJsonPlugin from 'generate-json-webpack-plugin'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
-import webpack from 'webpack'
+import GenerateJsonPlugin from 'generate-json-webpack-plugin'
+import HtmlWebpackPlugin from 'html-webpack-plugin'
+import MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import path from 'path'
+import { DefinePlugin, type Configuration, type WebpackPluginInstance } from 'webpack'
+import manifest from '../src/manifest'
 import i18nChrome from '../src/util/i18n/chrome'
 import tsConfig from '../tsconfig.json'
-import manifest from '../src/manifest'
 
 const tsPathAlias = tsConfig.compilerOptions.paths
 
@@ -13,19 +15,25 @@ const resolveAlias: { [index: string]: string | false | string[] } = {}
 const aliasPattern = /^(@.*)\/\*$/
 const sourcePattern = /^(src(\/.*)?)\/\*$/
 Object.entries(tsPathAlias).forEach(([alias, sourceArr]) => {
-    // Only process the alias starts with '@'
-    if (!aliasPattern.test(alias)) {
-        return
-    }
     if (!sourceArr.length) {
         return
     }
-    const index = alias.match(aliasPattern)[1]
-    const webpackSourceArr = sourceArr
-        .filter(source => sourcePattern.test(source))
-        // Only set alias which is in /src folder
-        .map(source => source.match(sourcePattern)[1])
-        .map(folder => path.resolve(__dirname, '..', folder))
+    const aliasMatchRes = alias.match(aliasPattern)
+    if (!aliasMatchRes) {
+        // Only process the alias starts with '@'
+        return
+    }
+    const [, index] = aliasMatchRes
+    const webpackSourceArr: string[] = []
+    sourceArr.forEach(source => {
+        const matchRes = source.match(sourcePattern)
+        if (!matchRes) {
+            // Only set alias which is in /src folder
+            return
+        }
+        const [, folder] = matchRes
+        webpackSourceArr.push(path.resolve(__dirname, '..', folder))
+    })
     resolveAlias[index] = webpackSourceArr
 })
 console.log("Alias of typescript: ")
@@ -33,23 +41,37 @@ console.log(resolveAlias)
 
 const optionGenerator = (outputPath: string, manifestHooker?: (manifest: any) => void) => {
     manifestHooker && manifestHooker(manifest)
-    const plugins: webpack.WebpackPluginInstance[] = [
+    const plugins: WebpackPluginInstance[] = [
         // Generate json files 
-        new GenerateJsonPlugin('manifest.json', manifest) as unknown as webpack.WebpackPluginInstance,
+        new GenerateJsonPlugin('manifest.json', manifest) as unknown as WebpackPluginInstance,
+        new HtmlWebpackPlugin({
+            filename: path.join('static', 'app.html'),
+            chunks: ['app'],
+        }),
         // copy static resources
         new CopyWebpackPlugin({
             patterns: [
-                { from: path.join(__dirname, '..', 'public'), to: path.join(outputPath, 'static') }
+                {
+                    from: path.join(__dirname, '..', 'public', 'images'),
+                    to: path.join(outputPath, 'static', 'images'),
+                }
             ]
-        }) as webpack.WebpackPluginInstance
+        }),
+        new MiniCssExtractPlugin(),
+        new DefinePlugin({
+            // https://github.com/vuejs/vue-cli/pull/7443
+            __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false,
+            __VUE_OPTIONS_API__: false,
+            __VUE_PROD_DEVTOOLS__: false,
+        }),
     ]
 
     const localeJsonArr = Object.entries(i18nChrome)
         .map(([locale, message]) => new GenerateJsonPlugin(`_locales/${locale}/messages.json`, message))
-        .map(plugin => plugin as unknown as webpack.WebpackPluginInstance)
+        .map(plugin => plugin as unknown as WebpackPluginInstance)
     plugins.push(...localeJsonArr)
 
-    const config: webpack.Configuration = {
+    const config: Configuration = {
         entry: {
             content_scripts: './src/content-script',
             app: './src/app',
@@ -62,31 +84,36 @@ const optionGenerator = (outputPath: string, manifestHooker?: (manifest: any) =>
         module: {
             rules: [
                 {
-                    test: /\.ts$/,
-                    exclude: '/node_modules/',
-                    use: ['ts-loader']
-                },
-                {
-                    test: /\.tsx$/,
-                    exclude: '/node_modules/',
-                    use: [
-                        'babel-loader',
-                        'ts-loader'
-                    ]
-                },
-                {
-                    test: /\.css$/,
-                    use: ["style-loader", "css-loader"],
+                    test: /\.tsx?$/,
+                    exclude: /^(node_modules|test|script)/,
+                    use: [{
+                        loader: 'babel-loader',
+                        options: {
+                            assumptions: {
+                                // Fix that react transform array proxy to object, and error occurs while destructing
+                                iterableIsArray: true,
+                            },
+                            presets: ["@babel/preset-env"],
+                            plugins: [
+                                "@vue/babel-plugin-jsx",
+                                "@babel/plugin-transform-modules-commonjs",
+                            ],
+                        },
+                    }, 'ts-loader'],
                 }, {
-                    test: /\.scss$/,
-                    use: ['style-loader', 'css-loader', 'sass-loader']
+                    test: /\.css$/,
+                    use: [MiniCssExtractPlugin.loader, 'css-loader'],
+                }, {
+                    test: /\.sc|ass$/,
+                    use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
                 }, {
                     test: /\.(jpg|jpeg|png|woff|woff2|eot|ttf|svg)$/,
-                    // exclude: /node_modules/,
-                    use: ['url-loader?limit=100000']
+                    exclude: /node_modules/,
+                    use: ['url-loader']
                 }, {
                     test: /\.m?js$/,
                     exclude: /(node_modules)/,
+                    use: ['babel-loader']
                 }
             ]
         },

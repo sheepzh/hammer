@@ -1,6 +1,7 @@
 
 import { I18nKey as _I18nKey, locale as _locale, t as _t } from "@util/i18n"
 import { tN as _tN } from "@util/i18n/i18n-vue"
+import { type VNode } from "vue"
 import messages, { AppMessage } from "./messages"
 
 const message = messages[_locale]
@@ -13,7 +14,7 @@ export function t(key: I18nKey, param?: any) {
 }
 
 export function tN(key: I18nKey, param?: any) {
-    return _tN<AppMessage>(message, { key, param })
+    return _tN<AppMessage, VNode>(message, { key, param })
 }
 
 export const locale = _locale

@@ -1,6 +1,6 @@
-import { ElButton, ElInput, ElOption, ElRow, ElSelect, ElSwitch, ElTooltip, ElCol, ElMessage } from 'element-plus'
+import clipboardy from 'clipboardy'
+import { ElButton, ElCol, ElInput, ElMessage, ElOption, ElRow, ElSelect, ElSwitch, ElTooltip } from 'element-plus'
 import { defineComponent, h, reactive } from 'vue'
-import { read as readClipboard } from 'clipboardy'
 import { t } from '../../locale'
 
 const inputRef = 'scopeInput'
@@ -60,7 +60,7 @@ export default defineComponent({
         content: t(msg => msg.dict.msg.useRegularMsg),
         placement: "left",
       },
-      { default: () => h(ElSwitch, { modelValue: _ctx.useReg, onChange: (val: boolean) => _ctx.useReg = val }) }
+      { default: () => h(ElSwitch, { modelValue: _ctx.useReg, onChange: val => _ctx.useReg = !!val }) }
     )
 
     const saveButton = h(
@@ -73,7 +73,7 @@ export default defineComponent({
     )
 
     const pasteButton = h(ElButton,
-      { icon: 'el-icon-document-copy', onClick: () => readClipboard().then(updatePattern) },
+      { icon: 'el-icon-document-copy', onClick: () => clipboardy.read().then(updatePattern) },
       { default: () => t(msg => msg.dict.button.paste) }
     )
 

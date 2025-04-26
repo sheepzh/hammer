@@ -1,12 +1,13 @@
+import { DocumentCopy } from '@element-plus/icons-vue'
+import { FEEDBACK_LINK } from "@util/constant/link"
+import { checkJSON } from "@util/file-util"
+import { locale } from "@util/i18n"
 import { ElButton, ElLink, ElMessage, ElSpace } from 'element-plus'
 import { defineComponent, h, Ref, ref } from 'vue'
-import ListTable from './list-table'
-import DictEdit from './dict-edit'
-import { checkJSON } from "@util/file-util"
 import DictionaryDb from '../../../database/dictionary-db'
 import { t } from '../../locale'
-import { FEEDBACK_LINK } from "@util/constant/link"
-import { locale } from "@util/i18n"
+import DictEdit from './dict-edit'
+import ListTable from './list-table'
 
 const db: DictionaryDb = new DictionaryDb(chrome.storage.local)
 
@@ -55,13 +56,12 @@ const fileInputProps = {
 }
 const fileInput = () => h('input', fileInputProps)
 
-const importButtonProps = {
+const importButton = () => h(ElButton, {
   size: 'small',
   type: 'primary',
-  icon: 'el-icon-document-copy',
+  icon: DocumentCopy,
   onClick: () => fileInputRef.value.click()
-}
-const importButton = () => h(ElButton, importButtonProps,
+},
   { default: () => [t(msg => msg.dict.button.import), fileInput()] }
 )
 

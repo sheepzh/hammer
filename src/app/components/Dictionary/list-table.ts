@@ -9,12 +9,11 @@ import {
   ElDialog,
   ElTooltip
 } from 'element-plus'
-import { defineComponent, h, reactive } from 'vue'
+import { defineComponent, h, reactive, toRaw } from 'vue'
 import Word from './word'
 import Scope from './scope'
 import DictionaryDb from '../../../database/dictionary-db'
 import ScopeList from './scope-list'
-import { nonreactive } from '../../../common/vue3-extent'
 import { saveJSON } from "@util/file-util"
 import { t } from '../../locale'
 
@@ -33,7 +32,7 @@ const renderOperationButton = (
 ) => {
   return h(
     ElButton,
-    { type: 'text', size: 'mini', onClick: callback },
+    { type: 'text', size: 'small', onClick: callback },
     () => name
   )
 }
@@ -48,7 +47,7 @@ const renderTable = (_ctx: any) => {
       align,
       minWidth: 40,
       label: t(msg => msg.item.wordCount),
-      formatter: (row: XGFLFG.Dictionary) => Object.values(row.words).length || 0
+      formatter: (row: XGFLFG.Dictionary) => `${Object.values(row.words).length ?? 0}`,
     }),
     // Scope of domain
     h(
@@ -65,7 +64,7 @@ const renderTable = (_ctx: any) => {
 
           const tag = () => h(
             ElTag,
-            { type: full ? 'info' : 'primary', size: 'mini' },
+            { type: full ? 'info' : 'primary', size: 'small' },
             { default: () => t(msg => full ? msg.item.scopeResult.all : msg.item.scopeResult.some) }
           )
           const content = () => h(ScopeList, { scopes: row.scopes || {}, tooltipEffect: 'light' })
@@ -90,8 +89,8 @@ const renderTable = (_ctx: any) => {
           const id = row.id
           return h(ElSwitch, {
             modelValue: row && !!row.enabled,
-            onChange: (val: boolean) => {
-              id && db.updateEnabled(id, val).then(() => (row.enabled = val))
+            onChange: val => {
+              id && db.updateEnabled(id, !!val).then(() => (row.enabled = !!val))
             }
           })
         }
@@ -139,7 +138,7 @@ const renderTable = (_ctx: any) => {
             }),
             // Export
             renderOperationButton(_ctx, t(msg => msg.dict.button.export), () => {
-              const toExport = nonreactive(row)
+              const toExport = toRaw(row)
               delete toExport['id']
               delete toExport['enabled']
               saveJSON(toExport, `${t(msg => msg.app.name)}_${row.name || 'UNNAMED'}.json`)
@@ -154,7 +153,7 @@ const renderTable = (_ctx: any) => {
     {
       data: _ctx.list,
       style: { width: '100%' },
-      size: 'mini',
+      size: 'small',
       border: true,
       fit: true
     },
@@ -168,7 +167,7 @@ const renderWord = (_ctx: any) => {
   return h(
     ElDialog,
     {
-      title: `${t(msg => msg.item.words)} - ${dict.name}`,
+      title: `${t(msg => msg.item.words)} - ${dict.name} `,
       modelValue: _ctx.wordOpen,
       destroyOnClose: true,
       onClosed: () => (_ctx.wordOpen = false)
@@ -182,7 +181,7 @@ const renderScope = (_ctx: any) => {
   const dict: XGFLFG.Dictionary = _ctx.current
   return h(ElDialog,
     {
-      title: `${t(msg => msg.item.scope)} - ${dict.name}`,
+      title: `${t(msg => msg.item.scope)} - ${dict.name} `,
       modelValue: _ctx.scopeOpen,
       destroyOnClose: true,
       onClosed: () => (_ctx.scopeOpen = false)

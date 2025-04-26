@@ -1,12 +1,11 @@
-import { defineComponent, h, reactive } from 'vue'
-import ScopeTest, { ScopeTestProps } from './scope-test'
+import { ElMessage, ElSpace } from 'element-plus'
+import { defineComponent, h, reactive, toRaw } from 'vue'
+import DictionaryDb from '../../../database/dictionary-db'
+import { t } from '../../locale'
 import ScopeAdd from './scope-add'
 import ScopeList from './scope-list'
+import ScopeTest, { ScopeTestProps } from './scope-test'
 import './style/scope'
-import { ElMessage, ElSpace } from 'element-plus'
-import DictionaryDb from '../../../database/dictionary-db'
-import { nonreactive } from '../../../common/vue3-extent'
-import { t } from '../../locale'
 
 const db: DictionaryDb = new DictionaryDb(chrome.storage.local)
 
@@ -44,7 +43,7 @@ export default defineComponent({
               dict.scopes = {}
             }
             dict.scopes[scope.type + scope.pattern] = scope
-            db.update(nonreactive(dict) as XGFLFG.Dictionary).then(() => {
+            db.update(toRaw(dict) as XGFLFG.Dictionary).then(() => {
               ElMessage.success(t(msg => msg.dict.msg.savedSuccessfully))
             })
           }

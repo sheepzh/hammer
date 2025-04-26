@@ -1,8 +1,7 @@
-import { defineComponent, h, reactive } from 'vue'
+import { defineComponent, h, reactive, toRaw } from 'vue'
 import { ElButton, ElDialog, ElInput, ElMessage } from 'element-plus'
 import './style/dict-add'
 import DictionaryDb from '../../../database/dictionary-db'
-import { nonreactive as nonreactive } from '../../../common/vue3-extent'
 import { t } from '../../locale'
 
 interface Props {
@@ -27,7 +26,7 @@ export default defineComponent({
       this.isOpen = true
     },
     save() {
-      const data: XGFLFG.Dictionary = nonreactive(this.formData) as XGFLFG.Dictionary
+      const data: XGFLFG.Dictionary = toRaw(this.formData) as XGFLFG.Dictionary
       if (!data.name) {
         ElMessage.error(t(msg => msg.dict.msg.nameBlankError))
       } else {
@@ -83,7 +82,7 @@ export default defineComponent({
           ElButton,
           {
             type: 'success',
-            size: 'mini',
+            size: 'small',
             icon: 'el-icon-check',
             onClick: _ctx.save
           },
@@ -93,7 +92,7 @@ export default defineComponent({
           ElButton,
           {
             icon: 'el-icon-close',
-            size: 'mini',
+            size: 'small',
             onClick: () => (_ctx.isOpen = false)
           },
           () => t(msg => msg.dict.button.cancel)
