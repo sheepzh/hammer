@@ -16,7 +16,6 @@ export type DictMessage = {
         giveUp: string
         paste: string
         test: string
-        replace: string
         addScope: string
         addWord: string
     }
@@ -33,7 +32,6 @@ export type DictMessage = {
         urlPlaceholder: string
         testUrlPlaceholder: string
         noOriginWordError: string
-        wordExistConfirmation: string
         wordDeleteConfirmMsg: string
     }
     testResult: {
@@ -62,7 +60,6 @@ const _default: Messages<DictMessage> = {
             giveUp: '放弃',
             paste: '粘贴',
             test: '测试',
-            replace: '替换',
             addScope: '新增范围',
             addWord: '新增违禁词',
         },
@@ -79,7 +76,6 @@ const _default: Messages<DictMessage> = {
             urlPlaceholder: '输入字典的有效范围，网址或者域名。需要使用正则表达式，请打开左侧开关',
             testUrlPlaceholder: '输入网址判断词典是否生效：https://www.baidu.com/?q=xxx',
             noOriginWordError: '未填写敏感词',
-            wordExistConfirmation: '敏感词[{word}]已存在，是否将原安全词[{oldMask}]替换成[{newMask}]？',
             wordDeleteConfirmMsg: '违禁词[{origin}]删除成功！'
         },
         testResult: {
@@ -106,7 +102,6 @@ const _default: Messages<DictMessage> = {
             giveUp: 'Give up',
             paste: 'Paste',
             test: 'Test',
-            replace: 'Replace',
             addScope: 'New one',
             addWord: 'New word',
         },
@@ -123,7 +118,6 @@ const _default: Messages<DictMessage> = {
             urlPlaceholder: 'Input the scope to add, URL or domain name',
             testUrlPlaceholder: 'URL to test, like https://www.chorme.com/',
             noOriginWordError: 'No origin word entered',
-            wordExistConfirmation: 'The original word [{word}] exists, the old replaced word [{oldMask}] will be replaced with [{newMask}].',
             wordDeleteConfirmMsg: 'Remove word [{origin}] successfully!'
         },
         testResult: {

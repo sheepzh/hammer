@@ -3,8 +3,8 @@ import { useRequest } from '@src/hooks/useRequest'
 import clipboardy from 'clipboardy'
 import { ElAlert, ElButton, ElCol, ElInput, ElRow } from "element-plus"
 import { defineComponent, ref } from "vue"
-import { matchScope } from "../../../../common/matcher"
-import { t } from "../../../locale"
+import { matchScope } from "../../../../../common/matcher"
+import { t } from "../../../../locale"
 
 const url2Host = (urlStr: string) => {
     const url = new URL(urlStr)

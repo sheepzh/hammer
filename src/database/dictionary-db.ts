@@ -10,7 +10,6 @@ const keyOf = (id: number) => KEY + id.toString()
  * @since 0.0.1
  */
 class DictionaryDb extends BaseDb {
-
     private async getCurrentId(): Promise<number> {
         const data: any = await this.storage.get(ID_KEY)
         const before = data[ID_KEY]
@@ -104,6 +103,14 @@ class DictionaryDb extends BaseDb {
             return
         }
         await this.setByKey(keyOf(id), dict)
+    }
+
+    async updateWords(id: number, wordArr: XGFLFG.BannedWord[]) {
+        const exist = await this.getById(id)
+        const words: XGFLFG.BannedWords = {}
+        wordArr.forEach(w => words[w.origin] = w)
+        exist.words = words
+        await this.setByKey(keyOf(id), exist)
     }
 }
 

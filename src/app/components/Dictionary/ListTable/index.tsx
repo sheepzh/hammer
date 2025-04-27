@@ -7,7 +7,7 @@ import { ElButton, ElDialog, ElMessage, ElMessageBox, ElSwitch, ElTable, ElTable
 import { defineComponent, ref, toRaw } from 'vue'
 import Scope from './Scope'
 import ScopeList from './Scope/ScopeList'
-import Word, { type WordInstance } from './Word'
+import Words, { WordsInstance } from './Words'
 
 const OperationButton = defineComponent<{ name: string, onClick: () => void }>(({ name, onClick }) => {
     return () => <ElButton type='primary' link onClick={onClick}>{name}</ElButton>
@@ -21,7 +21,7 @@ type Props = {
 
 const ListTable = defineComponent<Props>(({ onEdit }, ctx) => {
     const current = ref<XGFLFG.Dictionary>()
-    const editState = ref<'word' | 'scope'>()
+    const editState = ref<'scope'>()
 
     const { data: list, refreshAsync, refresh } = useRequest(() => dictionaryDb.listAll())
 
@@ -32,7 +32,13 @@ const ListTable = defineComponent<Props>(({ onEdit }, ctx) => {
 
     ctx.expose({ refresh } satisfies ListTableInstance)
 
-    const word = ref<WordInstance>()
+    const words = ref<WordsInstance>()
+
+    const handleWordsChange = (id: number, words: XGFLFG.BannedWords) => {
+        const exist = list.value.find(item => item.id === id)
+        if (!exist) return
+        exist.words = words
+    }
 
     return () => (
         <div style={{ width: '100%', marginTop: '20px' }}>
@@ -60,11 +66,7 @@ const ListTable = defineComponent<Props>(({ onEdit }, ctx) => {
                     {({ row }: ElTableRowScope<XGFLFG.Dictionary>) => <>
                         <OperationButton
                             name={t(msg => msg.item.words)}
-                            onClick={() => {
-                                current.value = toRaw(row)
-                                editState.value = 'word'
-                                word.value?.closeInput()
-                            }}
+                            onClick={() => words.value?.show(toRaw(row))}
                         />
                         <OperationButton
                             name={t(msg => msg.item.scope)}
@@ -132,14 +134,7 @@ const ListTable = defineComponent<Props>(({ onEdit }, ctx) => {
                     }}
                 />
             </ElDialog>
-            <ElDialog
-                title={`${t(msg => msg.item.words)} - ${current.value?.name}`}
-                modelValue={editState.value === 'word'}
-                onClosed={() => editState.value = undefined}
-                destroyOnClose
-            >
-                <Word ref={word} dict={current.value} />
-            </ElDialog>
+            <Words ref={words} onChanged={handleWordsChange} />
         </div>
     )
 }, { props: ['onEdit'] })

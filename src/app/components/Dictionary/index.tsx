@@ -1,5 +1,6 @@
 import ContentContainer from '@app/layout/ContentContainer'
 import Flex from '@app/layout/Flex'
+import { t } from '@app/locale'
 import dictionaryDb from '@db/dictionary-db'
 import { Edit, Plus, Upload } from '@element-plus/icons-vue'
 import { FEEDBACK_LINK } from "@util/constant/link"
@@ -9,7 +10,6 @@ import { ElButton, ElLink, ElMessage } from 'element-plus'
 import { defineComponent, ref } from 'vue'
 import DictEdit, { type DictEditInstance } from './DictEdit'
 import ListTable, { type ListTableInstance } from './ListTable'
-import { t } from '@app/locale'
 
 const Dictionary = defineComponent(() => {
     const edit = ref<DictEditInstance>()
