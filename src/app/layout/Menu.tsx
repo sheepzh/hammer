@@ -1,5 +1,5 @@
 import { ElMenu, ElMenuItem } from 'element-plus'
-import { defineComponent } from 'vue'
+import { defineComponent, type StyleValue } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { type I18nKey, t } from '../locale'
 
@@ -23,7 +23,10 @@ const Menu = defineComponent(() => {
     const current = useRoute()
 
     return () => (
-        <ElMenu defaultActive={current.path} class="menu">
+        <ElMenu
+            defaultActive={current.path}
+            style={{ height: '100%' } satisfies StyleValue}
+        >
             {ALL_MENUS.map(({ route, title }) => (
                 <ElMenuItem
                     index={route}

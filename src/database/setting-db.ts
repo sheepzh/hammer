@@ -2,7 +2,7 @@ import BaseDb from "./common/base-db"
 
 const PREFIX = '_SETTING_'
 const BUTTON_VISIBILITY = PREFIX + 'BUTTON_VISIBILITY_'
-export default class SettingDb extends BaseDb {
+class SettingDb extends BaseDb {
     /**
      * Update the visibility of button
      * 
@@ -22,3 +22,7 @@ export default class SettingDb extends BaseDb {
         return data[BUTTON_VISIBILITY] || false
     }
 }
+
+const settingDb = new SettingDb(chrome.storage.local)
+
+export default settingDb

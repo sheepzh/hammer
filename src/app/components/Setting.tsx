@@ -1,17 +1,16 @@
+import ContentContainer from "@app/layout/ContentContainer"
 import { t } from "@app/locale"
-import SettingDb from "@db/setting-db"
+import settingDb from "@db/setting-db"
 import { ElRow, ElSwitch } from "element-plus"
 import { defineComponent, onBeforeMount, ref, watch } from "vue"
 
-const DB = new SettingDb(chrome.storage.local)
-
 const Setting = defineComponent(() => {
     const showButton = ref(false)
-    onBeforeMount(() => DB.getVisibilityOfButton().then(val => showButton.value = !!val))
-    watch(showButton, () => DB.updateVisibilityOfButton(!!showButton.value))
+    onBeforeMount(() => settingDb.getVisibilityOfButton().then(val => showButton.value = !!val))
+    watch(showButton, () => settingDb.updateVisibilityOfButton(!!showButton.value))
 
     return () => (
-        <div class="app-container">
+        <ContentContainer>
             <ElRow>
                 <ElSwitch
                     modelValue={showButton.value}
@@ -26,7 +25,7 @@ const Setting = defineComponent(() => {
                     {t(msg => msg.setting.restoreLabel, { buttonText: t(msg => msg.restore.restoreButton) })}
                 </p>
             </ElRow>
-        </div>
+        </ContentContainer>
     )
 })
 

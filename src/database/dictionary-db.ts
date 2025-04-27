@@ -9,7 +9,7 @@ const keyOf = (id: number) => KEY + id.toString()
 /**
  * @since 0.0.1
  */
-export default class DictionaryDb extends BaseDb {
+class DictionaryDb extends BaseDb {
 
     private async getCurrentId(): Promise<number> {
         const data: any = await this.storage.get(ID_KEY)
@@ -106,3 +106,7 @@ export default class DictionaryDb extends BaseDb {
         await this.setByKey(keyOf(id), dict)
     }
 }
+
+const dictionaryDb = new DictionaryDb(chrome.storage.local)
+
+export default dictionaryDb

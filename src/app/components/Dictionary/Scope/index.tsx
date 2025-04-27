@@ -1,11 +1,11 @@
-import { ElSpace } from 'element-plus'
+import Flex from '@app/layout/Flex'
 import { defineComponent } from 'vue'
-import ScopeAdd from './scope-add'
-import ScopeList from './scope-list'
-import ScopeTest from './scope-test'
-import './style/scope'
+import './scope.sass'
+import ScopeAdd from './ScopeAdd'
+import ScopeList from './ScopeList'
+import ScopeTest from './ScopeTest'
 
-interface Props {
+type Props = {
     scopes: XGFLFG.Scopes
     onScopeAdd?: (scope: XGFLFG.Scope) => void
     onScopeDelete?: (key: string) => void
@@ -13,16 +13,16 @@ interface Props {
 
 const Scope = defineComponent<Props>(props => {
     return () => {
-        <ElSpace direction="vertical" style="width:100%">
+        <Flex>
             <ScopeTest scopes={props.scopes} />
-            <ScopeAdd onSaved={scope => props.onScopeAdd?.(scope)} />
+            <ScopeAdd onSave={scope => props.onScopeAdd?.(scope)} />
             <div style={{ height: '15px', width: '100%' }} />
             <ScopeList
                 scopes={props.scopes}
                 closable
                 onDeleted={key => props.onScopeDelete?.(key)}
             />
-        </ElSpace>
+        </Flex>
     }
 }, { props: ['scopes', 'onScopeAdd', 'onScopeDelete'] })
 

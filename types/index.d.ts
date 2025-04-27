@@ -41,7 +41,7 @@ declare namespace XGFLFG {
      * @since 0.0.1
      */
     type Dictionary = {
-        id?: number
+        id: number
         name?: string
         remark: string
         enabled?: boolean
@@ -80,4 +80,6 @@ declare namespace XGFLFG {
     type Scopes = { [key: string]: Scope }
 
     type ScopeType = 'host' | 'url'
+
+    type Locale = 'zh_CN' | 'en'
 }

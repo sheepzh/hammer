@@ -118,7 +118,7 @@ const optionGenerator = (outputPath: string, manifestHooker?: (manifest: any) =>
             ]
         },
         resolve: {
-            extensions: [".tsx", '.ts', ".js", '.css', '.scss'],
+            extensions: [".tsx", '.ts', ".js", '.css', '.scss', '.sass'],
             alias: resolveAlias,
         }
     }
