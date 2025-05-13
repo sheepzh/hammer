@@ -1,6 +1,8 @@
 {
+    "editor.tabSize": 4,
+    "editor.indentSize": "tabSize",
     "cSpell.words": [
-        "Sheepie",
-        "XGFLFG"
+        "XGFLFG",
+        "Xiang"
     ]
 }

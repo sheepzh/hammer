@@ -4,18 +4,18 @@ import { RouterView } from 'vue-router'
 import Menu from './Menu'
 
 const Main = defineComponent(() => {
-  return () => (
-    <ElContainer>
-      <ElAside>
-        <Menu />
-      </ElAside>
-      <ElContainer>
-        <ElMain>
-          <RouterView />
-        </ElMain>
-      </ElContainer>
-    </ElContainer>
-  )
+    return () => (
+        <ElContainer>
+            <ElAside>
+                <Menu />
+            </ElAside>
+            <ElContainer>
+                <ElMain>
+                    <RouterView />
+                </ElMain>
+            </ElContainer>
+        </ElContainer>
+    )
 })
 
 export default Main

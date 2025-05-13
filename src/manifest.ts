@@ -10,7 +10,9 @@ const manifest: chrome.runtime.ManifestV3 = {
     name: '__MSG_app_name__',
     description: "__MSG_app_description__",
     version,
-    author,
+    author: {
+        email: author.email,
+    },
     default_locale: 'en',
     homepage_url: homepage,
     manifest_version: 3,

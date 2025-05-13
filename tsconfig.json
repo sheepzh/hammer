@@ -1,24 +1,29 @@
 {
     "compilerOptions": {
-        "baseUrl": "./",
         "module": "CommonJS",
         "target": "ESNext",
-        "jsx": "preserve",
-        "jsxFactory": "h",
-        "jsxImportSource": "vue",
-        "jsxFragmentFactory": "Fragment",
-        "strict": true,
         "esModuleInterop": true,
         "sourceMap": true,
         "resolveJsonModule": true,
         "importHelpers": true,
         "moduleResolution": "node",
+        "baseUrl": "./",
+        "jsx": "preserve",
+        "jsxFactory": "h",
+        "jsxImportSource": "vue",
+        "jsxFragmentFactory": "Fragment",
         "paths": {
+            "@api/*": [
+                "src/api/*"
+            ],
             "@app/*": [
                 "src/app/*"
             ],
             "@util/*": [
                 "src/util/*"
+            ],
+            "@db/*": [
+                "src/database/*"
             ],
             "@service/*": [
                 "src/service/*"

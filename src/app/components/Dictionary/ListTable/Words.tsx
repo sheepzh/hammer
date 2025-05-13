@@ -20,7 +20,7 @@ const Words = defineComponent<Props>((props, ctx) => {
     const words = ref<XGFLFG.BannedWord[]>([])
     const visible = ref(false)
 
-    watch(words, (newWords) => {
+    watch(words, () => {
         if (!dictId.value) return
         const newVal: XGFLFG.BannedWords = {}
         words.value.forEach(w => newVal[w.origin] = w)

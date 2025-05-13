@@ -1,5 +1,5 @@
-import { onIconClick } from "./api/chrome/action"
-import { onInstalled } from "./api/chrome/runtime"
+import { onIconClick } from "@api/chrome/action"
+import { onInstalled } from "@api/chrome/runtime"
 
 function openAppPage() {
     const url = 'static/app.html'
@@ -7,5 +7,4 @@ function openAppPage() {
 }
 
 onIconClick(openAppPage)
-
 onInstalled(reason => reason === 'install' && openAppPage())
