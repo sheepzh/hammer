@@ -12,6 +12,7 @@
         "jsxFactory": "h",
         "jsxImportSource": "vue",
         "jsxFragmentFactory": "Fragment",
+        "strict": true,
         "paths": {
             "@api/*": [
                 "src/api/*"
@@ -30,9 +31,6 @@
             ],
             "@script/*": [
                 "src/content-script/*"
-            ],
-            "@db/*": [
-                "src/database/*"
             ],
             "@src/*": [
                 "src/*"

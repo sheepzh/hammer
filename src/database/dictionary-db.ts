@@ -53,6 +53,7 @@ class DictionaryDb extends BaseDb {
         const toAdd: XGFLFG.Dictionary = {
             id, name, remark,
             words: {},
+            scopes: {},
             enabled: true,
         }
         await this.setByKey(key, toAdd)
@@ -95,17 +96,6 @@ class DictionaryDb extends BaseDb {
         this.setByKey(keyOf(id), exist)
     }
 
-    /**
-     * Update the info
-     */
-    async update(dict: XGFLFG.Dictionary): Promise<void> {
-        const id = dict.id
-        if (!id) {
-            return
-        }
-        await this.setByKey(keyOf(id), dict)
-    }
-
     async updateBaseInfo(dict: Pick<XGFLFG.Dictionary, 'id' | 'name' | 'remark'>): Promise<void> {
         const { id, name, remark } = dict
         const exist = await this.getById(id)
@@ -115,11 +105,9 @@ class DictionaryDb extends BaseDb {
         await this.setByKey(keyOf(id), exist)
     }
 
-    async updateWords(id: number, wordArr: XGFLFG.BannedWord[]) {
+    async updateWords(id: number, words: XGFLFG.BannedWords) {
         const exist = await this.getById(id)
-        const words: XGFLFG.BannedWords = {}
-        wordArr.forEach(w => words[w.origin] = w)
-        exist.words = words
+        exist.words = words ?? {}
         await this.setByKey(keyOf(id), exist)
     }
 

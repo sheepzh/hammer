@@ -1,6 +1,6 @@
 import { locale } from "@app/locale"
 import ElementPlus from 'element-plus'
-import { type Language } from 'element-plus/es/locale'
+import type { Language } from 'element-plus/es/locale'
 import 'element-plus/theme-chalk/index.css'
 import type { App } from 'vue'
 

@@ -1,11 +1,10 @@
 import { t2Chrome } from "@util/i18n/chrome/t"
-import 'element-plus/theme-chalk/index.css'
 import { createApp } from 'vue'
 import './element-plus'
 import { initElementLocale } from './element-plus'
 import Main from "./layout"
 import installRouter from './router'
-import './style/index.sass'
+import './style'
 
 async function main() {
     const app = createApp(Main)

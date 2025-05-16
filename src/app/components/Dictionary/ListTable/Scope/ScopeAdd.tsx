@@ -1,14 +1,21 @@
+import Flex from '@app/layout/Flex'
 import { t } from '@app/locale'
 import { DocumentCopy, Plus } from '@element-plus/icons-vue'
 import clipboardy from 'clipboardy'
 import { ElButton, ElCol, ElInput, ElMessage, ElOption, ElRow, ElSelect, ElSwitch, ElTooltip, type InputInstance } from 'element-plus'
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, StyleValue } from 'vue'
 
 type Props = {
     onSave: (scope: XGFLFG.Scope) => void
 }
 
 const ALL_TYPES: XGFLFG.ScopeType[] = ['url', 'host']
+
+const APPEND_BTN_STYLE: StyleValue = {
+    marginInline: 0,
+    padding: 0,
+    display: 'flex',
+}
 
 const ScopeAdd = defineComponent<Props>(({ onSave }) => {
     const useReg = ref(false)
@@ -40,45 +47,51 @@ const ScopeAdd = defineComponent<Props>(({ onSave }) => {
     }
 
     return () => (
-        <ElRow gutter={20}>
-            <ElCol span={2} class='reg-switch-cell'>
-                <ElTooltip content={t(msg => msg.dict.msg.useRegularMsg)} placement="left">
-                    <ElSwitch modelValue={useReg.value} onChange={val => useReg.value = !!val} />
-                </ElTooltip>
-            </ElCol>
-            <ElCol span={22}>
+        <Flex gap={15}>
+            <ElTooltip content={t(msg => msg.dict.msg.useRegularMsg)} placement="left">
+                <ElSwitch modelValue={useReg.value} onChange={val => useReg.value = !!val} />
+            </ElTooltip>
+            <Flex flex={1}>
                 <ElInput
                     ref={input}
-                    class='scope-input'
                     modelValue={pattern.value}
-                    placeholder={t(msg => msg.dict.msg.urlPlaceholder)}
+                    placeholder='www.github.com, https://*.github.com/sheepzh/**'
                     clearable
                     onInput={val => pattern.value = val?.trim?.()}
                     onClear={() => pattern.value = ''}
                     onKeydown={ev => (ev as KeyboardEvent).code === 'Enter' && save({ useReg, pattern, input })}
                     v-slots={{
                         prepend: () => (
-                            <ElSelect modelValue={type.value} onChange={val => type.value = val}>
+                            <ElSelect
+                                modelValue={type.value}
+                                onChange={val => type.value = val}
+                                style={{
+                                    "--el-select-width": "100px",
+                                } as StyleValue}
+                            >
                                 {ALL_TYPES.map(type => (
                                     <ElOption label={t(msg => msg.item.scopeType[type])} value={type} />
                                 ))}
                             </ElSelect>
                         ),
-                        append: () => <>
-                            <ElButton icon={Plus} onClick={save}>
-                                {t(msg => msg.dict.button.add)}
-                            </ElButton>
-                            <ElButton
-                                icon={DocumentCopy}
-                                onClick={() => clipboardy.read().then(val => pattern.value = val.trim())}
-                            >
-                                {t(msg => msg.dict.button.paste)}
-                            </ElButton>
-                        </>,
+                        append: () => (
+                            <Flex gap={10} marginInline={-10}>
+                                <ElButton icon={Plus} onClick={save} style={APPEND_BTN_STYLE}>
+                                    {t(msg => msg.dict.button.add)}
+                                </ElButton>
+                                <ElButton
+                                    icon={DocumentCopy}
+                                    onClick={() => clipboardy.read().then(val => pattern.value = val.trim())}
+                                    style={APPEND_BTN_STYLE}
+                                >
+                                    {t(msg => msg.dict.button.paste)}
+                                </ElButton>
+                            </Flex>
+                        ),
                     }}
                 />
-            </ElCol>
-        </ElRow>
+            </Flex>
+        </Flex>
     )
 }, { props: ['onSave'] })
 

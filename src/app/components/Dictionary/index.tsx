@@ -2,7 +2,7 @@ import ContentContainer from '@app/layout/ContentContainer'
 import Flex from '@app/layout/Flex'
 import { t } from '@app/locale'
 import dictionaryDb from '@db/dictionary-db'
-import { Edit, Plus, Upload } from '@element-plus/icons-vue'
+import { Checked, Edit, Plus, Upload } from '@element-plus/icons-vue'
 import { FEEDBACK_LINK } from "@util/constant/link"
 import { checkJSON } from "@util/file-util"
 import { locale } from "@util/i18n"
@@ -10,11 +10,13 @@ import { ElButton, ElLink, ElMessage } from 'element-plus'
 import { defineComponent, ref } from 'vue'
 import DictEdit, { type DictEditInstance } from './DictEdit'
 import ListTable, { type ListTableInstance } from './ListTable'
+import Test, { type TestInstance } from './Test'
 
 const Dictionary = defineComponent(() => {
     const edit = ref<DictEditInstance>()
     const fileInput = ref<HTMLInputElement>()
     const table = ref<ListTableInstance>()
+    const test = ref<TestInstance>()
 
     const handleFileSelected = () => {
         const files = fileInput.value?.files
@@ -35,11 +37,14 @@ const Dictionary = defineComponent(() => {
         <ContentContainer v-slots={{
             filter: () => (
                 <Flex justify="end">
-                    <ElButton size="large" type="success" icon={Plus} onClick={() => edit.value?.add()}>
+                    <ElButton type="success" icon={Plus} onClick={() => edit.value?.add()}>
                         {t(msg => msg.dict.button.add)}
                     </ElButton>
-                    <ElButton size="large" type='primary' icon={Upload} onClick={() => fileInput.value?.click()}>
+                    <ElButton type='primary' icon={Upload} onClick={() => fileInput.value?.click()}>
                         {t(msg => msg.dict.button.import)}
+                    </ElButton>
+                    <ElButton type="primary" icon={Checked} onClick={() => test.value?.show()}>
+                        {t(msg => msg.dict.button.test)}
                     </ElButton>
                     {locale === 'zh_CN' && (
                         <ElLink icon={Edit} href={FEEDBACK_LINK} target="_blank">
@@ -58,6 +63,7 @@ const Dictionary = defineComponent(() => {
             content: () => <>
                 <ListTable ref={table} onEdit={(row: XGFLFG.Dictionary) => edit.value?.edit(row)} />
                 <DictEdit ref={edit} onSaved={() => table.value?.refresh()} />
+                <Test ref={test} />
             </>
         }} />
     )

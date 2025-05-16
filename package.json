@@ -1,5 +1,5 @@
 {
-  "name": "regulation",
+  "name": "work-blocker-4-browser",
   "version": "0.0.8",
   "description": "想夹谁就夹谁？",
   "author": {
@@ -17,7 +17,7 @@
     "@element-plus/icons-vue": "^2.3.1",
     "clipboardy": "^4.0.0",
     "element-plus": "^2.9.10",
-    "vue": "^3.5.13",
+    "vue": "^3.5.14",
     "vue-router": "^4.5.1"
   },
   "devDependencies": {
@@ -40,7 +40,7 @@
     "html-webpack-plugin": "^5.6.3",
     "husky": "^9.1.7",
     "mini-css-extract-plugin": "^2.9.2",
-    "sass": "^1.88.0",
+    "sass": "^1.89.0",
     "sass-loader": "^16.0.5",
     "style-loader": "^4.0.0",
     "ts-loader": "^9.5.2",
@@ -52,9 +52,9 @@
     "webpack-cli": "^6.0.1"
   },
   "bugs": {
-    "url": "https://github.com/sheepzh/regulation/issues"
+    "url": "https://github.com/sheepzh/work-blocker/issues"
   },
-  "homepage": "https://github.com/sheepzh/regulation#readme",
+  "homepage": "https://github.com/sheepzh/work-blocker#readme",
   "keywords": [
     "相关法律法规",
     "敏感词"
@@ -62,7 +62,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sheepzh/regulation.git"
+    "url": "git+https://github.com/sheepzh/work-blocker.git"
   },
   "engines": {
     "node": ">=22"

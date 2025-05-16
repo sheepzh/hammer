@@ -53,7 +53,7 @@ const DictEdit = defineComponent<Props>((props, ctx) => {
         const data = toRaw(formData)
         if (!data.name) return ElMessage.error(t(msg => msg.dict.msg.nameBlankError))
         const toDo: (dict: XGFLFG.Dictionary) => Promise<void> = state.value === 'edit'
-            ? data => dictionaryDb.update(data)
+            ? data => dictionaryDb.updateBaseInfo(data)
             : data => dictionaryDb.add(data)
 
         try {
@@ -92,11 +92,11 @@ const DictEdit = defineComponent<Props>((props, ctx) => {
                 ),
                 footer: () => (
                     <Flex justify="center">
-                        <ElButton type="primary" icon={Check} onClick={save}>
-                            {t(msg => msg.dict.button.confirm)}
-                        </ElButton>
                         <ElButton type="info" icon={Close} onClick={close}>
                             {t(msg => msg.dict.button.cancel)}
+                        </ElButton>
+                        <ElButton type="primary" icon={Check} onClick={save}>
+                            {t(msg => msg.dict.button.confirm)}
                         </ElButton>
                     </Flex>
                 )

@@ -1,29 +1,57 @@
 import Flex from '@app/layout/Flex'
-import { defineComponent } from 'vue'
-import './scope.sass'
+import { t } from '@app/locale'
+import dictionaryDb from '@db/dictionary-db'
+import { useManualRequest, useRequest } from '@src/hooks/useRequest'
+import { ElMessage } from 'element-plus'
+import { defineComponent, ref, toRaw } from 'vue'
 import ScopeAdd from './ScopeAdd'
-import ScopeList from './ScopeList'
-import ScopeTest from './ScopeTest'
+import ScopeTag from './ScopeTag'
+import ScopeTest from '../../Test'
 
 type Props = {
+    dictId: number
     scopes: XGFLFG.Scopes
-    onScopeAdd?: (scope: XGFLFG.Scope) => void
-    onScopeDelete?: (key: string) => void
 }
 
+const keyOf = ({ type, pattern }: XGFLFG.Scope) => type + pattern
+
 const Scope = defineComponent<Props>(props => {
-    return () => {
-        <Flex>
-            <ScopeTest scopes={props.scopes} />
-            <ScopeAdd onSave={scope => props.onScopeAdd?.(scope)} />
-            <div style={{ height: '15px', width: '100%' }} />
-            <ScopeList
-                scopes={props.scopes}
-                closable
-                onDeleted={key => props.onScopeDelete?.(key)}
-            />
-        </Flex>
+    const scopes = ref<XGFLFG.Scope[]>(Object.values(props.scopes ?? {}))
+
+    useManualRequest(() => {
+        const data: XGFLFG.Scopes = {}
+        scopes.value.forEach(scope => {
+            const key = scope.type + scope.pattern
+            data[key] = toRaw(scope)
+        })
+        dictionaryDb.updateScopes(props.dictId, data)
+    }, { deps: scopes })
+
+    const { data: listKey } = useRequest(() => Date.now(), { deps: scopes })
+
+    const handleAdd = (scope: XGFLFG.Scope) => {
+        const key = keyOf(scope)
+        scopes.value = [...scopes.value.filter(s => key !== keyOf(s)), scope]
+        ElMessage.success(t(msg => msg.dict.msg.savedSuccessfully))
     }
-}, { props: ['scopes', 'onScopeAdd', 'onScopeDelete'] })
+
+    const handleDelete = (scope: XGFLFG.Scope) => {
+        const key = keyOf(scope)
+        scopes.value = scopes.value.filter(s => key !== keyOf(s))
+        ElMessage.success(t(msg => msg.dict.msg.deletedSuccessfully))
+    }
+
+    return () => (
+        <Flex width="100%" column gap={15}>
+            <Flex column gap={15}>
+                <ScopeTest scopes={props.scopes} />
+                <ScopeAdd onSave={handleAdd} />
+            </Flex>
+            <Flex key={listKey.value} wrap>
+                {scopes.value.map(s => (<ScopeTag value={s} onClose={() => handleDelete(s)} />))}
+            </Flex>
+        </Flex>
+    )
+}, { props: ['dictId', 'scopes'] })
 
 export default Scope

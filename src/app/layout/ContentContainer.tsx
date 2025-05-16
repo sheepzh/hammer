@@ -8,21 +8,7 @@
 import { ElCard, ElScrollbar } from "element-plus"
 import { defineComponent, h, type StyleValue, useSlots } from "vue"
 import ContentCard from "./ContentCard"
-
-const CONTAINER_STYLE: StyleValue = {
-    marginTop: '40px',
-    marginBottom: '40px',
-    height: 'calc(100% - 40px)',
-    padding: '0 10px',
-    overflow: 'hidden',
-}
-
-const FILTER_CONTAINER_STYLE: StyleValue = {
-    marginBottom: '15px',
-    display: 'flex',
-    alignItems: 'center',
-    userSelect: 'none',
-}
+import Flex from "./Flex"
 
 const FILTER_BODY_STYLE: StyleValue = {
     paddingBottom: '18px',
@@ -35,18 +21,17 @@ const ContentContainer = defineComponent(() => {
     const { default: default_, filter, content } = useSlots()
     return () => (
         <ElScrollbar>
-            <div style={CONTAINER_STYLE}>
+            <Flex width="100%" column gap={15}>
                 {filter && (
                     <ElCard
-                        class="filter-container"
-                        style={FILTER_CONTAINER_STYLE}
+                        style={{ alignItems: 'center', userSelect: 'none' } satisfies StyleValue}
                         bodyStyle={FILTER_BODY_STYLE}
                         v-slots={filter}
                     />
                 )}
                 {!!default_ && h(default_)}
                 {!default_ && content && <ContentCard v-slots={content} />}
-            </div>
+            </Flex>
         </ElScrollbar>
     )
 })
