@@ -22,7 +22,7 @@ async function processSwitcher() {
     }
 
     const switcher = generateSwitcher(context)
-    window.onload = () => document.body.append(switcher)
+    window.addEventListener('load', () => document.body.append(switcher))
 }
 
 async function main() {
@@ -55,9 +55,15 @@ async function main() {
     const observer = generateDocumentObserver(replacer)
 
     observer.observe(document, config)
-    window.addEventListener('unload', () => observer.disconnect())
+    tryDisconnect(observer)
 
     processSwitcher()
+}
+
+const tryDisconnect = (observer: MutationObserver) => {
+    try {
+        window.addEventListener('beforeunload', () => observer.disconnect())
+    } catch { }
 }
 
 main()

@@ -11,8 +11,10 @@ class Replacer {
 
     words: XGFLFG.BannedWordUseReg[]
     context: Context
+    usedTime: number
 
     constructor(words: XGFLFG.BannedWordUseReg[], context: Context) {
+        this.usedTime = 0
         this.words = words
         this.context = context
     }
@@ -41,7 +43,7 @@ class Replacer {
         if (!nodeKey) return
         Array.from(node.childNodes).forEach((child, i) => {
             if (child.nodeName === '#text') {
-                this.processTextNode(node, i, nodeKey)
+                this.processTextNode(child, i, nodeKey)
             } else {
                 this.replaceChildren(child)
             }

@@ -1,12 +1,13 @@
-import CopyWebpackPlugin from 'copy-webpack-plugin'
-import GenerateJsonPlugin from 'generate-json-webpack-plugin'
-import HtmlWebpackPlugin from 'html-webpack-plugin'
-import MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import {
+    CopyRspackPlugin, CssExtractRspackPlugin, DefinePlugin, HtmlRspackPlugin,
+    type Configuration,
+    type RspackPluginInstance
+} from "@rspack/core"
 import path from 'path'
-import { DefinePlugin, type Configuration, type WebpackPluginInstance } from 'webpack'
 import manifest from '../src/manifest'
 import i18nChrome from '../src/util/i18n/chrome'
 import tsConfig from '../tsconfig.json'
+import { GenerateJsonPlugin } from "./plugins/generate-json"
 
 const tsPathAlias = tsConfig.compilerOptions.paths
 
@@ -41,15 +42,15 @@ console.log(resolveAlias)
 
 const optionGenerator = (outputPath: string, manifestHooker?: (manifest: any) => void) => {
     manifestHooker && manifestHooker(manifest)
-    const plugins: WebpackPluginInstance[] = [
+    const plugins: RspackPluginInstance[] = [
         // Generate json files 
-        new GenerateJsonPlugin('manifest.json', manifest) as unknown as WebpackPluginInstance,
-        new HtmlWebpackPlugin({
+        new GenerateJsonPlugin('manifest.json', manifest),
+        new HtmlRspackPlugin({
             filename: path.join('static', 'app.html'),
             chunks: ['app'],
         }),
         // copy static resources
-        new CopyWebpackPlugin({
+        new CopyRspackPlugin({
             patterns: [
                 {
                     from: path.join(__dirname, '..', 'public', 'images'),
@@ -57,7 +58,7 @@ const optionGenerator = (outputPath: string, manifestHooker?: (manifest: any) =>
                 }
             ]
         }),
-        new MiniCssExtractPlugin(),
+        new CssExtractRspackPlugin(),
         new DefinePlugin({
             // https://github.com/vuejs/vue-cli/pull/7443
             __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false,
@@ -68,7 +69,6 @@ const optionGenerator = (outputPath: string, manifestHooker?: (manifest: any) =>
 
     const localeJsonArr = Object.entries(i18nChrome)
         .map(([locale, message]) => new GenerateJsonPlugin(`_locales/${locale}/messages.json`, message))
-        .map(plugin => plugin as unknown as WebpackPluginInstance)
     plugins.push(...localeJsonArr)
 
     const config: Configuration = {
@@ -102,10 +102,10 @@ const optionGenerator = (outputPath: string, manifestHooker?: (manifest: any) =>
                     }, 'ts-loader'],
                 }, {
                     test: /\.css$/,
-                    use: [MiniCssExtractPlugin.loader, 'css-loader'],
+                    use: [CssExtractRspackPlugin.loader, 'css-loader'],
                 }, {
                     test: /\.sc|ass$/,
-                    use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
+                    use: [CssExtractRspackPlugin.loader, 'css-loader', 'sass-loader']
                 }, {
                     test: /\.(jpg|jpeg|png|woff|woff2|eot|ttf|svg)$/,
                     exclude: /node_modules/,

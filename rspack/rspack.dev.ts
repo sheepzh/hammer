@@ -1,8 +1,8 @@
-import FileManagerWebpackPlugin from 'filemanager-webpack-plugin'
-import GenerateJsonPlugin from 'generate-json-webpack-plugin'
 import path from 'path'
-import { type WebpackPluginInstance } from 'webpack'
-import optionGenerator from './webpack.common'
+import { FileManagerPlugin } from './plugins/file-manager'
+import { GenerateJsonPlugin } from './plugins/generate-json'
+import optionGenerator from './rspack.common'
+import { DefinePlugin } from '@rspack/core'
 
 const outputDir = path.resolve(__dirname, '..', 'dist_dev')
 
@@ -20,23 +20,22 @@ const manifestFirefoxName = 'manifest-firefox.json'
 // The manifest.json is different from Chrome's with add-on ID
 const firefoxManifestGeneratePlugin = new GenerateJsonPlugin(manifestFirefoxName,
     { ...manifest, browser_specific_settings: { gecko: { id: 'timer@zhy' } } }
-) as unknown as WebpackPluginInstance
+)
 if (options.plugins) {
     options.plugins.push(firefoxManifestGeneratePlugin)
     const firefoxDevDir = path.join(__dirname, '..', 'firefox_dev')
     // Generate FireFox dev files
     options.plugins.push(
-        new FileManagerWebpackPlugin({
+        new FileManagerPlugin({
             events: {
                 onEnd: [
                     {
                         copy: [{ source: outputDir, destination: firefoxDevDir }],
                         delete: [path.join(outputDir, manifestFirefoxName), path.join(firefoxDevDir, 'manifest.json')],
-                        move: [{ source: path.join(firefoxDevDir, manifestFirefoxName), destination: path.join(firefoxDevDir, 'manifest.json') }]
                     }
                 ]
             }
-        }) as WebpackPluginInstance,
+        }),
     )
 }
 
@@ -44,8 +43,5 @@ options.output && (options.output.path = outputDir)
 
 // no eval with development, but generate *.map.js
 options.devtool = 'cheap-module-source-map'
-
-// Use cache with filesystem
-options.cache = { type: 'filesystem' }
 
 export default options

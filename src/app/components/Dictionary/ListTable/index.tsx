@@ -1,14 +1,15 @@
+import Box from '@app/layout/Box'
 import Flex from '@app/layout/Flex'
 import { t } from '@app/locale'
 import dictionaryDb from '@db/dictionary-db'
 import { useRequest } from "@src/hooks/useRequest"
 import { saveJSON } from "@util/file-util"
 import type { ElTableRowScope } from "element"
-import { ElButton, ElDialog, ElMessage, ElMessageBox, ElSwitch, ElTable, ElTableColumn, ElTag, ElTooltip } from 'element-plus'
+import { ElButton, ElMessage, ElMessageBox, ElSwitch, ElTable, ElTableColumn, ElTag, ElTooltip } from 'element-plus'
 import { defineComponent, ref, toRaw } from 'vue'
-import Scope from './Scope'
+import Scope, { type ScopeInstance } from './Scope'
 import ScopeTag from './Scope/ScopeTag'
-import Words from './Words'
+import Words, { type WordsInstance } from './Words'
 
 const OperationButton = defineComponent<{ name: string, onClick: () => void }>(({ name, onClick }) => {
     return () => <ElButton type='primary' link onClick={onClick}>{name}</ElButton>
@@ -16,17 +17,13 @@ const OperationButton = defineComponent<{ name: string, onClick: () => void }>((
 
 export type ListTableInstance = { refresh: () => void }
 
-type Props = {
-    onEdit: (dict: XGFLFG.Dictionary) => void
-}
-
 type ColData = ElTableRowScope<XGFLFG.Dictionary>
 
-const ListTable = defineComponent<Props>(({ onEdit }, ctx) => {
-    const current = ref<XGFLFG.Dictionary>()
-    const editState = ref<'scope' | 'word' | 'hidden'>()
+const ListTable = defineComponent<{ onEdit: ArgCallback<XGFLFG.Dictionary> }>(({ onEdit }, ctx) => {
+    const scopeInst = ref<ScopeInstance>()
+    const wordsInst = ref<WordsInstance>()
 
-    const { data: list, refreshAsync, refresh } = useRequest(() => dictionaryDb.listAll())
+    const { data: list, refreshAsync, refresh, ts } = useRequest(() => dictionaryDb.listAll())
 
     const updateEnabled = async (id: number, newEnabled: boolean) => {
         await dictionaryDb.updateEnabled(id, newEnabled)
@@ -59,7 +56,7 @@ const ListTable = defineComponent<Props>(({ onEdit }, ctx) => {
     }
 
     return () => (
-        <div style={{ width: '100%', marginTop: '20px' }}>
+        <Box width="100%" marginTop={20}>
             <ElTable data={list.value} width="100%" border fit>
                 <ElTableColumn prop="name" align="center" minWidth={40} label={t(msg => msg.item.name)} />
                 <ElTableColumn
@@ -86,41 +83,19 @@ const ListTable = defineComponent<Props>(({ onEdit }, ctx) => {
                 <ElTableColumn align="center" minWidth={30} label={t(msg => msg.item.enabled)}>
                     {({ row: { enabled, id } }: ColData) => <ElSwitch modelValue={enabled} onChange={val => updateEnabled(id, !!val)} />}
                 </ElTableColumn>
-                <ElTableColumn align="center" minWidth={70} label={t(msg => msg.item.operation)}>
+                <ElTableColumn align="center" minWidth={70} label={t(msg => msg.item.operation)} key={ts.value}>
                     {({ row }: ColData) => <>
-                        <OperationButton
-                            name={t(msg => msg.item.words)}
-                            onClick={() => (editState.value = 'word') && (current.value = toRaw(row))}
-                        />
-                        <OperationButton
-                            name={t(msg => msg.item.scope)}
-                            onClick={() => (editState.value = 'scope') && (current.value = toRaw(row))}
-                        />
+                        <OperationButton name={t(msg => msg.item.words)} onClick={() => wordsInst.value?.open(toRaw(row))} />
+                        <OperationButton name={t(msg => msg.item.scope)} onClick={() => scopeInst.value?.open(toRaw(row))} />
                         <OperationButton name={t(msg => msg.dict.button.edit)} onClick={() => onEdit(toRaw(row))} />
                         <OperationButton name={t(msg => msg.dict.button.delete)} onClick={() => handleDelete(toRaw(row))} />
                         <OperationButton name={t(msg => msg.dict.button.export)} onClick={() => handleExport(toRaw(row))} />
                     </>}
                 </ElTableColumn>
             </ElTable>
-            <ElDialog
-                width="80%"
-                title={`${t(msg => msg.item.scope)} - ${current.value?.name}`}
-                modelValue={editState.value === 'scope'}
-                onClosed={() => (editState.value = 'hidden') && refresh()}
-                destroyOnClose
-            >
-                {!!current.value && <Scope dictId={current.value?.id} scopes={current.value.scopes} />}
-            </ElDialog>
-            <ElDialog
-                width="80%"
-                title={`${t(msg => msg.item.words)} - ${current.value?.name}`}
-                modelValue={editState.value === 'word'}
-                onClosed={() => (editState.value = 'hidden') && refresh()}
-                destroyOnClose
-            >
-                {!!current.value && <Words dictId={current.value?.id} words={current.value.words} />}
-            </ElDialog>
-        </div>
+            <Scope ref={scopeInst} onClose={refresh} />
+            <Words ref={wordsInst} onClose={refresh} />
+        </Box>
     )
 }, { props: ['onEdit'] })
 

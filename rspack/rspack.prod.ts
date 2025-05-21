@@ -1,7 +1,7 @@
-import FileManagerWebpackPlugin from 'filemanager-webpack-plugin'
 import path from 'path'
-import { type WebpackPluginInstance } from 'webpack'
-import optionGenerator from './webpack.common'
+import optionGenerator from './rspack.common'
+import { FileManagerPlugin } from './plugins/file-manager'
+import { DefinePlugin } from '@rspack/core'
 
 const { name, version } = require(path.join(__dirname, '..', 'package.json'))
 
@@ -20,9 +20,8 @@ const copyMapper = srcDir.map(p => { return { source: path.join(__dirname, '..',
 const readmeForFirefox = path.join(__dirname, '..', 'doc', 'for-fire-fox.md')
 
 options.plugins && options.plugins.push(
-    new FileManagerWebpackPlugin({
+    new FileManagerPlugin({
         events: {
-            onStart: [{ delete: [path.join(outputDir, '*')] }],
             // Archive at the end
             onEnd: [
                 { delete: [path.join(outputDir, '*.LICENSE.txt')] },
@@ -45,7 +44,7 @@ options.plugins && options.plugins.push(
                 }
             ]
         }
-    }) as WebpackPluginInstance
+    }),
 )
 
 options.output && (options.output.path = outputDir)
