@@ -1,6 +1,6 @@
-import { Messages } from ".."
-import appMessages, { AppMessage } from "../components/app"
-import restoreMessages, { RestoreMessage } from "../components/restore"
+import { type Messages } from ".."
+import appMessages, { type AppMessage } from "../components/app"
+import restoreMessages, { type RestoreMessage } from "../components/restore"
 
 export type ChromeMessage = {
     app: AppMessage
@@ -32,7 +32,7 @@ const placeholder: ChromeMessage = {
     }
 }
 
-function routerPath(root: any, parentPath = undefined) {
+function routerPath(root: any, parentPath = '') {
     Object.entries(root)
         .forEach(([key, value]) => {
             const currentPath = parentPath ? `${parentPath}_${key}` : key

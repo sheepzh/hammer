@@ -1,7 +1,7 @@
 /**
  * Context of the replacer
  */
-class ContextResultItem {
+type ContextResultItem = {
     origin: string
     replaced: string
 }
@@ -28,10 +28,9 @@ export default class Context {
         this.container.set(nodeKey, result)
     }
 
-    get(nodeKey: string, indexOfChildren: number): ContextResultItem {
-        const item: ContentResult | undefined = this.container.get(nodeKey)
-        if (!item) return null
-        return item[indexOfChildren]
+    get(nodeKey: string, indexOfChildren: number): ContextResultItem | undefined {
+        const item = this.container.get(nodeKey)
+        return item?.[indexOfChildren]
     }
 
     getOrigin(nodeKey: string, indexOfChildren: number): string {

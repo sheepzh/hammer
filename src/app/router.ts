@@ -1,18 +1,17 @@
-import { App } from 'vue'
+import { type App } from 'vue'
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
-
 
 const routes: RouteRecordRaw[] = [
     {
         path: '/',
-        redirect: '/banned-word'
+        redirect: '/dict'
     }, {
-        path: '/banned-word',
-        component: () => import('./component/banned-word')
+        path: '/dict',
+        component: () => import('./components/Dictionary')
     },
     {
         path: '/setting',
-        component: () => import('./component/setting')
+        component: () => import('./components/Setting')
     }
 ]
 

@@ -4,17 +4,19 @@
  * @author zhy
  * @since 0.0.1
  */
-//@ts-ignore
 import { version, author, homepage } from '../package.json'
-const manifest = {
+
+const manifest: chrome.runtime.ManifestV3 = {
     name: '__MSG_app_name__',
     description: "__MSG_app_description__",
     version,
-    author,
+    author: {
+        email: author.email,
+    },
     default_locale: 'en',
     homepage_url: homepage,
-    manifest_version: 2,
-    browser_action: {
+    manifest_version: 3,
+    action: {
         default_icon: "static/images/icon.png",
         default_title: "__MSG_app_iconTitle__"
     },
@@ -24,8 +26,7 @@ const manifest = {
         128: "static/images/icon.png"
     },
     background: {
-        scripts: ['background.js'],
-        persistent: false
+        service_worker: 'background.js',
     },
     content_scripts: [
         {
@@ -40,7 +41,7 @@ const manifest = {
         }
     ],
     permissions: [
-        'storage'
+        'storage',
     ]
 }
 

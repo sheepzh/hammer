@@ -50,7 +50,6 @@ const merge = (left: Node, right: Node) => {
 }
 
 export default function mergeChildren(node: Node): void {
-    // bugfix: #1 https://github.com/sheepzh/regulation/issues/1
     // Only merge on specific sites
     if (!needMerge()) {
         return

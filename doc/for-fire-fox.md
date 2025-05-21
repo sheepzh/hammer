@@ -5,7 +5,7 @@
  npm run dev
 ```
 
-The output directory is _firefox_dev_
+The output directory is _dist_dev_
 
 ## How to Build for Production
 
@@ -15,9 +15,3 @@ npm run build
 ```
 
 The output directory is _dist_prod_ and _market_packages_
-
-## Another
-
-Also you could visit the repository in GitHub
-
-[sheepzh/make-zero](https://github.com/sheepzh/regulation)

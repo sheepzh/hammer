@@ -13,7 +13,7 @@ export default abstract class BaseDb {
      * @returns 
      */
     protected setByKey(key: string, obj: Object): Promise<void> {
-        const toUpdate = {}
+        const toUpdate: Record<string, any> = {}
         toUpdate[key] = obj
         return this.storage.set(toUpdate)
     }

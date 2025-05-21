@@ -9,8 +9,7 @@ const keyOf = (id: number) => KEY + id.toString()
 /**
  * @since 0.0.1
  */
-export default class DictionaryDb extends BaseDb {
-
+class DictionaryDb extends BaseDb {
     private async getCurrentId(): Promise<number> {
         const data: any = await this.storage.get(ID_KEY)
         const before = data[ID_KEY]
@@ -46,15 +45,17 @@ export default class DictionaryDb extends BaseDb {
 
     /**
      * Add new record 
-     * 
-     * @param toAdd the record to add, without uuid in it
      */
-    async add(toAdd: XGFLFG.Dictionary): Promise<void> {
+    async add(data: Pick<XGFLFG.Dictionary, 'name' | 'remark'>): Promise<void> {
+        const { name, remark } = data
         const id = await this.getCurrentId()
         const key = keyOf(id)
-        toAdd.id = id
-        toAdd.enabled = true
-        toAdd.words = {}
+        const toAdd: XGFLFG.Dictionary = {
+            id, name, remark,
+            words: {},
+            scopes: {},
+            enabled: true,
+        }
         await this.setByKey(key, toAdd)
         await this.updateId(id)
     }
@@ -95,14 +96,27 @@ export default class DictionaryDb extends BaseDb {
         this.setByKey(keyOf(id), exist)
     }
 
-    /**
-     * Update the info
-     */
-    async update(dict: XGFLFG.Dictionary): Promise<void> {
-        const id = dict.id
-        if (!id) {
-            return
-        }
-        await this.setByKey(keyOf(id), dict)
+    async updateBaseInfo(dict: Pick<XGFLFG.Dictionary, 'id' | 'name' | 'remark'>): Promise<void> {
+        const { id, name, remark } = dict
+        const exist = await this.getById(id)
+        if (!exist) return
+        exist.name = name
+        exist.remark = remark
+        await this.setByKey(keyOf(id), exist)
+    }
+
+    async updateWords(id: number, words: XGFLFG.BannedWords) {
+        const exist = await this.getById(id)
+        exist.words = words ?? {}
+        await this.setByKey(keyOf(id), exist)
+    }
+
+    async updateScopes(id: number, scopes: XGFLFG.Scopes): Promise<void> {
+        const exist = await this.getById(id)
+        if (!exist) return
+        exist.scopes = scopes
+        await this.setByKey(keyOf(id), exist)
     }
 }
+
+export default new DictionaryDb(chrome.storage.local)

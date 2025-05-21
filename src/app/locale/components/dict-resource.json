@@ -1,0 +1,80 @@
+{
+    "zh_CN": {
+        "button": {
+            "add": "新增词典",
+            "import": "导入词典",
+            "feedback": "使用反馈",
+            "word": "违禁词",
+            "scope": "生效范围",
+            "edit": "编辑",
+            "delete": "删除",
+            "export": "导出",
+            "confirm": "确认",
+            "cancel": "取消",
+            "ok": "是的",
+            "giveUp": "放弃",
+            "paste": "粘贴",
+            "test": "测试",
+            "addScope": "新增范围"
+        },
+        "msg": {
+            "nameBlankError": "词典名称不能为空",
+            "savedSuccessfully": "保存成功",
+            "importedSuccessfully": "导入成功",
+            "deleteConfirmMsg": "是否删除词典[{name}]？",
+            "operationConfirmation": "操作提示",
+            "deletedSuccessfully": "删除成功",
+            "noUrlError": "未输入网址或域名",
+            "invalidRegularError": "无效的正则表达式",
+            "useRegularMsg": "是否启用正则匹配？",
+            "noOriginWordError": "未填写敏感词",
+            "wordDeleteConfirmMsg": "违禁词[{origin}]删除成功！"
+        },
+        "testResult": {
+            "noTestUrl": "请输入待测试网址",
+            "effectiveNoWord": "字典有效，未指定范围。",
+            "effectiveWithPattern": "字典有效：{pattern}",
+            "wrongRegular": "错误的正则表达式",
+            "ineffective": "没有命中任何有效的字典"
+        }
+    },
+    "en": {
+        "button": {
+            "add": "New One",
+            "import": "Import",
+            "feedback": "Feedback",
+            "word": "Words",
+            "scope": "Scope",
+            "edit": "Edit",
+            "delete": "Remove",
+            "export": "Export",
+            "confirm": "Confirm",
+            "cancel": "Cancel",
+            "ok": "OK",
+            "giveUp": "Give up",
+            "paste": "Paste",
+            "test": "Test",
+            "addScope": "Add Scope"
+        },
+        "msg": {
+            "nameBlankError": "The name can't be blank!",
+            "savedSuccessfully": "Saved successfully!",
+            "importedSuccessfully": "Imported successfully!",
+            "deleteConfirmMsg": "The dictionary named [{name}] will be removed.",
+            "operationConfirmation": "Operation confirmation",
+            "deletedSuccessfully": "Removed successfully!",
+            "noUrlError": "No URL or domain name entered",
+            "invalidRegularError": "Invalid regular expression",
+            "useRegularMsg": "Whether to enable regular matching?",
+            "noOriginWordError": "No origin word entered",
+            "wordDeleteConfirmMsg": "Remove word [{origin}] successfully!"
+        },
+        "testResult": {
+            "noTestUrl": "Input URL to test, pls",
+            "effectiveNoWord": "Effective, no scope",
+            "effectiveWithPattern": "Effective: {pattern}",
+            "wrongRegular": "Wrong regular expression",
+            "ineffective": "No effective dictionaries"
+        }
+    }
+}

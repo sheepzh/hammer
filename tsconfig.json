@@ -1,19 +1,30 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
-        "target": "es5",
+        "module": "CommonJS",
+        "target": "ESNext",
         "esModuleInterop": true,
         "sourceMap": true,
         "resolveJsonModule": true,
         "importHelpers": true,
         "moduleResolution": "node",
         "baseUrl": "./",
+        "jsx": "preserve",
+        "jsxFactory": "h",
+        "jsxImportSource": "vue",
+        "jsxFragmentFactory": "Fragment",
+        "strict": true,
         "paths": {
+            "@api/*": [
+                "src/api/*"
+            ],
             "@app/*": [
                 "src/app/*"
             ],
             "@util/*": [
                 "src/util/*"
+            ],
+            "@db/*": [
+                "src/database/*"
             ],
             "@service/*": [
                 "src/service/*"
@@ -35,6 +46,5 @@
     "exclude": [
         "node_modules",
         "dist"
-    ],
-    "strict": true
+    ]
 }

@@ -11,7 +11,7 @@ export type AppMessage = {
  */
 const _default: Messages<AppMessage> = {
     en: {
-        name: 'Hammer',
+        name: 'Word Blocker',
         description: 'Replace the trigger words with other words or star signs',
         iconTitle: 'Dictionary Management'
     },
